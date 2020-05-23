@@ -5,14 +5,20 @@ import random
 def hex(x):
     return binascii.hexlify(x).decode()
 
+def dbl256(x):
+  return sha256(sha256(x).digest()).digest()
+
+def checksum(x):
+  return dbl256(x)[:4]
+
 def b58wchecksum(x):
-    checksum = sha256(sha256(x)).digest().digest()[:4]
-    return base58.b58encode(x+checksum)
+  return base58.b58encode(x+checksum(x))
 
 def ripemd160(x):
     d = hashlib.new('ripemd160')
     d.update(x)
-    return d    
+    return d   
+
 # generating private key
 random.seed(1337) 
 priv_key = bytes([random.randint(0, 255) for x in range(32)])
@@ -31,7 +37,7 @@ sk = ecdsa.SigningKey.from_string(priv_key, curve=ecdsa.SECP256k1)
 vk = sk.get_verifying_key()
 public_key = b"\x04" + vk.to_string()
 hash160 = ripemd160(sha256(public_key).digest()).digest()
-public_addr_a = b"\x80" +hash160
+public_addr_a = b"\x80" + hash160
 public_addr_b = b58wchecksum(public_addr_a)
 print(public_addr_b)
 
