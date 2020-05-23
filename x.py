@@ -32,5 +32,5 @@ def get_key_with_seed(seed=1337):
     vk = sk.get_verifying_key()
     public_key = b"\x04" + vk.to_string()
     hash160 = ripemd160(sha256(public_key).digest()).digest()
-    public_addr = b58wchecksum(b"\x80" + hash160)
-    return priv_key, WIF, public_key, hash160, public_addr
+    public_addr = b58wchecksum(b"\x00" + hash160)
+    return priv_key, WIF, public_key, hash160, public_addr    
