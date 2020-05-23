@@ -19,36 +19,18 @@ def ripemd160(x):
     d.update(x)
     return d   
 
-# generating private key
-random.seed(1337) 
-priv_key = bytes([random.randint(0, 255) for x in range(32)])
+def get_key_with_seed(seed=1337):
+    # generating private key
+    random.seed(seed) 
+    priv_key = bytes([random.randint(0, 255) for x in range(32)])
 
-#private key to WIF
-# fullkey = b"\x80" + priv_key
-# sha256a = sha256(fullkey).digest()
-# sha256b = sha256(sha256a).digest()
-# WIF = base58.b58encode(fullkey+sha256b[:4])
-fullkey = b"\x08" + priv_key
-WIF = b58wchecksum(fullkey)
-print(WIF)
+    #WIF from private key
+    WIF = b58wchecksum(b"\x80" + priv_key)
 
-#public key
-sk = ecdsa.SigningKey.from_string(priv_key, curve=ecdsa.SECP256k1)
-vk = sk.get_verifying_key()
-public_key = b"\x04" + vk.to_string()
-hash160 = ripemd160(sha256(public_key).digest()).digest()
-public_addr_a = b"\x80" + hash160
-public_addr_b = b58wchecksum(public_addr_a)
-print(public_addr_b)
-
-
-# print(hex(sha256b))
-# sha256a = sha256(fullkey).digest()
-# sha256b = sha256(sha256a).digest()
-# WIF = base58.b58decode(fullkey+sha256b[:4])
-# print(shex(fullkey))
-
-# WIF = base58.b58encode(binascii.unhexlify(final_key))
-# print (WIF)
-
-#ecdsa y² = x³ + ax + b secp256k1 
+    #public key
+    sk = ecdsa.SigningKey.from_string(priv_key, curve=ecdsa.SECP256k1)
+    vk = sk.get_verifying_key()
+    public_key = b"\x04" + vk.to_string()
+    hash160 = ripemd160(sha256(public_key).digest()).digest()
+    public_addr = b58wchecksum(b"\x80" + hash160)
+    return priv_key, WIF, public_key, hash160, public_addr
