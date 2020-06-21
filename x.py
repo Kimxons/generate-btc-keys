@@ -1,4 +1,5 @@
-import os, binascii, base58, ecdsa, hashlib
+import os, binascii, base58, ecdsa
+import hashlib
 from hashlib import sha256
 import random
 
