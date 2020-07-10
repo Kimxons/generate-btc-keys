@@ -1,4 +1,5 @@
-import os, binascii, base58, ecdsa, hashlib
+import os, binascii, base58, ecdsa
+import hashlib
 from hashlib import sha256
 import random
 
@@ -24,7 +25,7 @@ def ripemd160(x):
   d.update(x)
   return d   
 
-def get_key_with_seed(seed=1337):
+def get_key_with_seed(seed=1313):
   # generating private key
   random.seed(seed) 
   priv_key = bytes([random.randint(0, 255) for x in range(32)])
